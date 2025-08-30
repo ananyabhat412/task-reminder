@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Class Reminder Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(120deg, #A8C0FF 0%, #fbc2eb 100%);
+      --glass-bg: rgba(255, 255, 255, 0.18);
+      --shadow: 0 8px 24px rgba(68, 76, 186, 0.13);
+      --primary: #5C6BC0;
+      --accent: #F8BBD0;
+      --accent-dark: #3949AB;
+      --sidebar: #fff;
+      --sidebar-shadow: 2px 0 12px rgba(92, 107, 192, 0.065);
+      --muted: #7e8bb6;
+      --radius: 18px;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      margin: 0;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+        Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      color: #122;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--sidebar);
+      box-shadow: var(--sidebar-shadow);
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding-top: 2rem;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-left: 2rem;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar nav ul li {
+      font-size: 1rem;
+      padding: 18px 36px;
+      border-radius: 8px 0 0 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.13s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar nav ul li.active,
+    .sidebar nav ul li:hover {
+      background: var(--accent);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      margin-left: 220px;
+      padding: 40px 4vw;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header h1 {
+      font-size: 2.1rem;
+      color: var(--primary);
+      margin: 0;
+      letter-spacing: -1px;
+    }
+
+    .header span {
+      font-size: 1.1rem;
+      background: var(--accent);
+      padding: 7px 18px;
+      border-radius: 18px;
+      color: #512da8;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    select,
+    input[type="time"],
+    input[type="text"] {
+      background: #f3e6ff;
+      margin: 0 4px;
+      border: 1px solid #d1dbff;
+      color: #5c6bc0;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 3px 24px rgba(68, 98, 226, 0.1);
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      transition: background 0.19s, transform 0.07s;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, var(--primary), #8aa8ff);
+      color: #fff;
+    }
+
+    button.accent {
+      background: linear-gradient(135deg, var(--accent), #8aa8ff);
+      color: #512da8;
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, #ff7a7a, #ffd3d3);
+      color: #8e2121;
+    }
+
+    button:hover,
+    select:focus,
+    input:focus {
+      background: var(--accent-dark);
+      color: #fff;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      min-height: 102px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeIn 0.6s;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(345px, 1fr));
+      gap: 28px;
+      margin-top: 32px;
+    }
+
+    /* Next class info */
+    .next {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(110, 161, 255, 0.17);
+      border: 1px solid #3a4ea0;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.22px;
+      width: max-content;
+      margin-bottom: 3px;
+    }
+
+    .big {
+      font-size: clamp(21px, 4.2vw, 38px);
+      font-weight: 900;
+      margin: 0.13rem 0;
+    }
+
+    .sub {
+      color: var(--muted);
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: clamp(19px, 3.1vw, 33px);
+      color: var(--accent-dark);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 11px;
+      flex-wrap: wrap;
+      margin: 6px 0 14px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      background: #fdf6ff;
+      color: var(--accent-dark);
+      transition: background 0.25s;
+    }
+
+    .tab:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #20306d, #162554);
+      color: #fff;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px 14px;
+    }
+
+    thead th {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.21px;
+    }
+
+    tbody tr {
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 16px;
+    }
+
+    tbody tr td:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+
+    tbody tr td:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #b6bde6;
+      background: #f3f3fa;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .row-actions button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 1.1rem;
+      transition: color 0.25s;
+    }
+
+    .row-actions button:hover {
+      color: var(--accent-dark);
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: #fff6ff;
+      border: 1.2px solid #b6bde6;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      z-index: 200;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .add-modal {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.55);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: var(--glass-bg);
+      border-radius: 21px;
+      box-shadow: var(--shadow);
+      padding: 32px 38px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-width: 320px;
+    }
+
+    .modal-content .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 9px;
+    }
+
+    .modal-content label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: rgba(0, 0, 0, 0.11);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 8px;
+    }
+
+    @media (max-width: 800px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding: 19px 1vw;
+      }
+      .sidebar {
+        width: 54px;
+      }
+      .logo span,
+      .sidebar nav ul li span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fas fa-calendar-alt"></i>
+      <span>RemindMe</span>
+    </div>
+    <nav>
+      <ul>
+        <li class="active">
+          <i class="fas fa-clock"></i> Today's Reminders
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <main>
+    <section class="header">
+      <h1>Today's Timetable</h1>
+      <span id="currentDayBadge"></span>
+      <div class="actions">
+        <button id="askPermBtn">Enable Notifications</button>
+        <select id="leadSelect">
+          <option value="5">Remind 5 min early</option>
+          <option value="10">Remind 10 min early</option>
+          <option value="15" selected>Remind 15 min early</option>
+          <option value="30">Remind 30 min early</option>
+        </select>
+        <button class="accent" id="exportBtn">Export</button>
+        <button class="accent" id="importBtn">Import</button>
+        <button class="primary" id="addBtn">
+          <i class="fas fa-plus"></i> Add Class
+        </button>
+      </div>
+    </section>
+
+    <section class="cards">
+      <!-- Left: Next class + Countdown -->
+      <section class="card">
+        <div class="next">
+          <div>
+            <div class="badge" id="dayBadge">Today</div>
+            <div class="big" id="nextTitle">No class right now 🎉</div>
+            <div class="sub" id="nextMeta">Add your timetable to get reminders.</div>
+          </div>
+          <div class="timer" id="countdown">--:--:--</div>
+        </div>
+        <div class="tiny">
+          Keep this browser window open to receive reminders. Notifications work
+          offline.
+        </div>
+      </section>
+
+      <!-- Right: Weekly Table -->
+      <section class="card" style="min-width:310px">
+        <div class="tabs" id="tabs"></div>
+        <div class="table-scroll">
+          <div id="tableWrap"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" style="display:none"></div>
+
+  <!-- Modal -->
+  <dialog id="classDialog">
+    <form method="dialog">
+      <div class="modal-content">
+        <h3 style="margin: 0 0 8px">Class Details</h3>
+        <div class="field">
+          <label>Day</label>
+          <select id="fDay"></select>
+        </div>
+        <div class="field">
+          <label>Start Time (24h)</label>
+          <input id="fStart" type="time" required />
+        </div>
+        <div class="field">
+          <label>End Time (24h)</label>
+          <input id="fEnd" type="time" required />
+        </div>
+        <div class="field">
+          <label>Subject</label>
+          <input id="fSubject" placeholder="e.g., SE & PM" required />
+        </div>
+        <div class="field">
+          <label>Instructor (optional)</label>
+          <input id="fTeacher" placeholder="e.g., Mrs. Shilpa K" />
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px;
+          "
+        >
+          <button type="button" class="danger" id="deleteBtn" style="display: none">
+            Delete
+          </button>
+          <button class="accent" value="cancel">Cancel</button>
+          <button class="primary" id="saveBtn" value="default">Save</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    /******************** Data ************************/
+    const DAYS = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+    const DEFAULT_TABLE = {
+      Monday: [
+        { start: "09:30", end: "10:30", subject: "Library", teacher: "" },
+        { start: "10:30", end: "11:30", subject: "SE & PM", teacher: "" },
+        { start: "11:30", end: "12:30", subject: "CV", teacher: "" },
+        { start: "13:30", end: "14:30", subject: "CN", teacher: "" },
+      ],
+      Tuesday: [
+        { start: "09:30", end: "10:30", subject: "EVS", teacher: "" },
+        { start: "10:40", end: "11:40", subject: "CN", teacher: "" },
+        { start: "11:40", end: "12:30", subject: "RM & PR", teacher: "" },
+      ],
+      Wednesday: [
+        { start: "09:30", end: "11:30", subject: "RM & PR (Lab)", teacher: "" },
+        { start: "11:30", end: "12:30", subject: "CV", teacher: "" },
+      ],
+      Thursday: [
+        { start: "09:30", end: "10:30", subject: "TC", teacher: "" },
+        { start: "10:30", end: "11:30", subject: "SE & PM", teacher: "" },
+        { start: "11:30", end: "12:30", subject: "CN", teacher: "" },
+      ],
+      Friday: [
+        { start: "09:30", end: "10:30", subject: "RM & PR", teacher: "" },
+        { start: "10:30", end: "11:30", subject: "CV", teacher: "" },
+        { start: "11:30", end: "12:30", subject: "TC", teacher: "" },
+      ],
+      Saturday: [
+        { start: "09:30", end: "10:30", subject: "DV Lab", teacher: "" },
+        { start: "10:30", end: "11:30", subject: "CN Lab", teacher: "" },
+      ],
+      Sunday: [],
+    };
+    const LS_KEY = "classReminder.timetable.v1";
+    const LS_NOTI = "classReminder.notified";
+    const LS_LEAD = "classReminder.lead";
+    let timetable = loadTimetable();
+    let activeDay = new Date().toLocaleDateString(undefined, { weekday: "long" });
+    let editIndex = null;
+
+    // Load timetable data from localStorage or default
+    function loadTimetable() {
+      try {
+        return JSON.parse(localStorage.getItem(LS_KEY)) || DEFAULT_TABLE;
+      } catch (e) {
+        return DEFAULT_TABLE;
+      }
+    }
+
+    // Save timetable to localStorage + refresh UI
+    function saveTimetable() {
+      localStorage.setItem(LS_KEY, JSON.stringify(timetable));
+      render();
+    }
+
+    /******************** UI Elements ************************/
+    const tabs = document.getElementById("tabs");
+    const tableWrap = document.getElementById("tableWrap");
+    const nextTitle = document.getElementById("nextTitle");
+    const nextMeta = document.getElementById("nextMeta");
+    const dayBadge = document.getElementById("dayBadge");
+    const countdown = document.getElementById("countdown");
+    const currentDayBadge = document.getElementById("currentDayBadge");
+    const toast = document.getElementById("toast");
+
+    currentDayBadge.textContent = new Date().toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "short",
+      day: "2-digit",
+    });
+
+    // Populate day tabs
+    DAYS.forEach((d) => {
+      const b = document.createElement("button");
+      b.className = "tab";
+      b.textContent = d;
+      b.onclick = () => {
+        activeDay = d;
+        renderTable();
+      };
+      tabs.appendChild(b);
+    });
+
+    // Helper: escape HTML safely
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>\"]/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+      }[c]));
+    }
+
+    // Convert 24-hour "HH:MM" to 12-hour format with AM/PM
+    function to12Hour(time24) {
+      let [h, m] = time24.split(":").map(Number);
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12; // convert hour 0 -> 12
+      return `${h}:${m.toString().padStart(2, "0")} ${ampm}`;
+    }
+
+    // Render timetable table for active day, with 12-hour format times
+    function renderTable() {
+      const rows = timetable[activeDay] || [];
+      const html = rows.length
+        ? `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Time</th>
+            <th>Subject</th>
+            <th>Instructor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (r, i) => `
+            <tr data-i="${i}" class="row">
+              <td>${i + 1}</td>
+              <td>
+                <span class="pill">${to12Hour(r.start)} – ${to12Hour(r.end)}</span>
+              </td>
+              <td>${escapeHtml(r.subject)}</td>
+              <td>${escapeHtml(r.teacher || "—")}</td>
+              <td class="row-actions">
+                <button onclick="editRow('${activeDay}', ${i})" aria-label="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </td>
+            </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>`
+        : '<div class="tiny">No classes for this day. Click "Add Class".</div>';
+      tableWrap.innerHTML = html;
+      [...tabs.children].forEach((b) =>
+        b.classList.toggle("active", b.textContent === activeDay)
+      );
+    }
+
+    // Modal logic, populate days select
+    const dlg = document.getElementById("classDialog");
+    const fDay = document.getElementById("fDay");
+    const fStart = document.getElementById("fStart");
+    const fEnd = document.getElementById("fEnd");
+    const fSubject = document.getElementById("fSubject");
+    const fTeacher = document.getElementById("fTeacher");
+    const delBtn = document.getElementById("deleteBtn");
+    DAYS.forEach((d) => {
+      const o = document.createElement("option");
+      o.value = o.textContent = d;
+      fDay.appendChild(o);
+    });
+
+    // Add new class button
+    document.getElementById("addBtn").onclick = () => {
+      editIndex = null;
+      delBtn.style.display = "none";
+      fDay.value = activeDay;
+      fStart.value = "09:30";
+      fEnd.value = "10:30";
+      fSubject.value = "";
+      fTeacher.value = "";
+      dlg.showModal();
+    };
+
+    // Edit existing class
+    window.editRow = (day, i) => {
+      const r = timetable[day][i];
+      editIndex = i;
+      fDay.value = day;
+      fStart.value = r.start;
+      fEnd.value = r.end;
+      fSubject.value = r.subject;
+      fTeacher.value = r.teacher || "";
+      delBtn.style.display = "inline-block";
+      dlg.showModal();
+    };
+
+    // Delete class
+    delBtn.onclick = () => {
+      const d = fDay.value;
+      if (editIndex !== null) {
+        timetable[d].splice(editIndex, 1);
+        saveTimetable();
+      }
+      dlg.close();
+    };
+
+    // Save class from modal
+    document.getElementById("saveBtn").onclick = (e) => {
+      e.preventDefault();
+      const rec = {
+        start: fStart.value,
+        end: fEnd.value,
+        subject: fSubject.value.trim(),
+        teacher: fTeacher.value.trim(),
+      };
+      const d = fDay.value;
+      timetable[d] = timetable[d] || [];
+      if (editIndex === null) {
+        timetable[d].push(rec);
+      } else {
+        timetable[d][editIndex] = rec;
+      }
+      timetable[d].sort((a, b) => a.start.localeCompare(b.start)); // sort by start time
+      saveTimetable();
+      dlg.close();
+    };
+
+    // Export timetable JSON
+    document.getElementById("exportBtn").onclick = () => {
+      const blob = new Blob([JSON.stringify(timetable, null, 2)], {
+        type: "application/json",
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "timetable.json";
+      a.click();
+    };
+
+    // Import timetable JSON
+    document.getElementById("importBtn").onclick = () => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "application/json";
+      inp.onchange = () => {
+        const f = inp.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            timetable = JSON.parse(r.result);
+            saveTimetable();
+          } catch (e) {
+            toastMsg("Invalid file");
+          }
+        };
+        r.readAsText(f);
+      };
+      inp.click();
+    };
+
+    // Lead reminder time selection and persistence
+    const leadSelect = document.getElementById("leadSelect");
+    const storedLead = +localStorage.getItem(LS_LEAD) || 15;
+    leadSelect.value = storedLead;
+    leadSelect.onchange = () => {
+      localStorage.setItem(LS_LEAD, leadSelect.value);
+    };
+
+    // Request notification permission button
+    document.getElementById("askPermBtn").onclick = () => {
+      if (!("Notification" in window))
+        return toastMsg("Notifications not supported");
+      Notification.requestPermission().then((s) => toastMsg("Permission: " + s));
+    };
+
+    // Toast message helper
+    function toastMsg(msg) {
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => (toast.style.display = "none"), 2200);
+    }
+
+    // Find upcoming class
+    function upcomingClass(now = new Date()) {
+      const day = DAYS[now.getDay() - 1 < 0 ? 6 : now.getDay() - 1];
+      const todays = timetable[day] || [];
+      const toMs = (t) => {
+        const [h, m] = t.split(":").map(Number);
+        const d = new Date(now);
+        d.setHours(h, m, 0, 0);
+        return d;
+      };
+      const nowMs = now.getTime();
+      // next class today
+      const upcoming = todays
+        .map((r) => ({
+          ...r,
+          startAt: toMs(r.start).getTime(),
+          endAt: toMs(r.end).getTime(),
+          day,
+        }))
+        .filter((r) => r.endAt > nowMs)
+        .sort((a, b) => a.startAt - b.startAt)[0];
+      if (upcoming) return upcoming;
+      // else, first class of next working day
+      for (let i = 1; i <= 7; i++) {
+        const nd = new Date(now);
+        nd.setDate(nd.getDate() + i);
+        const dname = DAYS[(nd.getDay() + 6) % 7];
+        const list = timetable[dname] || [];
+        if (list.length) {
+          const [h, m] = list[0].start.split(":").map(Number);
+          const ns = new Date(nd);
+          ns.setHours(h, m, 0, 0);
+          const [h2, m2] = list[0].end.split(":").map(Number);
+          const ne = new Date(nd);
+          ne.setHours(h2, m2, 0, 0);
+          return { ...list[0], startAt: ns.getTime(), endAt: ne.getTime(), day: dname };
+        }
+      }
+      return null;
+    }
+
+    // Update UI for next class and countdown
+    function updateNextClassUI() {
+      const now = new Date();
+      const up = upcomingClass(now);
+      dayBadge.textContent = new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(
+        now
+      );
+      if (!up) {
+        nextTitle.textContent = "No classes scheduled";
+        nextMeta.textContent = "Enjoy your day!";
+        countdown.textContent = "--:--:--";
+        return;
+      }
+      nextTitle.textContent = up.subject;
+      const timeStr = `${up.day} • ${to12Hour(up.start)} – ${to12Hour(up.end)}`;
+      nextMeta.textContent = timeStr;
+      const lead = (+localStorage.getItem(LS_LEAD) || 15) * 60 * 1000;
+      const target = up.startAt;
+      const diff = target - now.getTime();
+      countdown.textContent = formatDuration(Math.max(0, diff));
+    }
+
+    // Format countdown duration as HH:MM:SS
+    function formatDuration(ms) {
+      const s = Math.floor(ms / 1000);
+      const h = Math.floor(s / 3600),
+        m = Math.floor((s % 3600) / 60),
+        sec = s % 60;
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    }
+
+    // Periodically check and show notifications
+    setInterval(() => {
+      checkAndNotify();
+      updateNextClassUI();
+    }, 19 * 1000);
+
+    // Notification check and send
+    function checkAndNotify() {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      const now = new Date();
+      const day = DAYS[(now.getDay() + 6) % 7];
+      const list = timetable[day] || [];
+      const lead = (+localStorage.getItem(LS_LEAD) || 15) * 60 * 1000;
+      const toMs = (t) => {
+        const [h, m] = t.split(":").map(Number);
+        const d = new Date(now);
+        d.setHours(h, m, 0, 0);
+        return d.getTime();
+      };
+      const store = JSON.parse(localStorage.getItem(LS_NOTI) || "{}");
+      const todayKey = now.toISOString().slice(0, 10);
+      store[todayKey] = store[todayKey] || {};
+
+      list.forEach((r, idx) => {
+        const dueAt = toMs(r.start) - lead;
+        if (now.getTime() >= dueAt && !store[todayKey][idx]) {
+          store[todayKey][idx] = true;
+          localStorage.setItem(LS_NOTI, JSON.stringify(store));
+          new Notification("Next Class: " + r.subject, {
+            body: `${to12Hour(r.start)} – ${to12Hour(r.end)}${
+              r.teacher ? ` • ${r.teacher}` : ""
+            }`,
+            tag: `class-${todayKey}-${idx}`,
+          });
+        }
+      });
+    }
+
+    // Initial UI render
+    renderTable();
+    updateNextClassUI();
+
+    // Render all UI parts
+    function render() {
+      [...tabs.children].forEach((b) =>
+        b.classList.toggle("active", b.textContent === activeDay)
+      );
+      renderTable();
+      updateNextClassUI();
+    }
+  </script>
+</body>
+</html>
